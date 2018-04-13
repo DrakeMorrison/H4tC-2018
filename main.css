@@ -1,6 +1,6 @@
-.image {
-  min-width: 100%;
-  min-height: 50em;
+.media {
+  width: 75%;
+  height: 15em;
   background-color: black;
   background-image: '';
   background-repeat: no-repeat;
@@ -10,4 +10,8 @@
 
 #outputDiv {
   height: 100%;
+}
+
+.entry {
+  /* border: 1px solid black; */
 }

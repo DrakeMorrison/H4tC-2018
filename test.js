@@ -14,7 +14,6 @@ function successFunction () {
   var responseData = JSON.parse(this.responseText).content;
 
   let data = isApproved(responseData);
-  console.log(data);
 
   var imgTypes = ['jpg', 'jpeg', 'png', 'gif'];
   var audioTypes = ['mp3', 'wma'];
@@ -31,8 +30,7 @@ function successFunction () {
       buildAudioCard(data[i]);
     }
   }
-  addCarouselImages(data);
-  $('#outputDiv').slick()
+  addCarouselImages();
 };
 
 function isApproved (data) {
@@ -62,8 +60,10 @@ function buildImageCard (entryData) {
   var post = entryData.answers[4].answer;
   var name = entryData.answers[3].answer;
 
-  domString += '<div class="">';
-  domString +=  '<img class="image" data-src="' + source + '" alt="">';
+  domString += '<div class="entry">';
+  if (source !== '') {
+    domString +=  '<img class="media" data-src="' + source + '" alt="">';
+  }
   domString +=  '<h3>' + name + '</h3>';
   domString +=  '<p>' + post + '</p>';
   domString += '</div>';
@@ -72,30 +72,50 @@ function buildImageCard (entryData) {
 }
 
 function addCarouselImages (dataArray) {
-  var carouselImages = document.getElementsByClassName('image');
+  var carouselImages = document.getElementsByClassName('media');
   var imgArray = Array.from(carouselImages);
-  imgArray.forEach(function (img) {
-    var src = img.getAttribute('data-src');
-    img.style.backgroundImage = 'url(' + src + ')';
-  });
+  for (let i = 0; i < imgArray.length; i++) {
+    var src = imgArray[i].getAttribute('data-src');
+    if (src != undefined) {
+      imgArray[i].style.backgroundImage = 'url(' + src + ')';
+    }
+  }
 }
 
 function buildAudioCard (entryData) {
-  // var source = entryData.answers[9].answer[0];
+  var domString = '';
 
-  // var domString = '';
-  // domString += "<audio src='" + source + "'></audio>";
+  var source = entryData.answers[9].answer[0];
+  var post = entryData.answers[4].answer;
+  var name = entryData.answers[3].answer;
 
-  // printToDom(domString, 'outputDiv');
+  domString += '<div class="entry">';
+  if (source !== '') {
+    domString +=  '<audio class="media" src="' + source + '" alt=""></audio>';
+  }
+  domString +=  '<h3>' + name + '</h3>';
+  domString +=  '<p>' + post + '</p>';
+  domString += '</div>';
+
+  printToDom(domString, 'outputDiv');
 };
 
 function buildVideoCard (entryData) {
-  // var source = entryData.answers[9].answer[0];
+  var domString = '';
 
-  // var domString = '';
-  // domString += "<video type='video/mov' controls width='700' height='344' src='" + source + "'></video>";
+  var source = entryData.answers[9].answer[0];
+  var post = entryData.answers[4].answer;
+  var name = entryData.answers[3].answer;
 
-  // printToDom(domString, 'outputDiv');
+  domString += '<div class="entry">';
+  if (source !== '') {
+    domString +=  '<video controls class="media" src="' + source + '" alt="">/video>';
+  }
+  domString +=  '<h3>' + name + '</h3>';
+  domString +=  '<p>' + post + '</p>';
+  domString += '</div>';
+
+  printToDom(domString, 'outputDiv');
 };
 
 getData();
