@@ -1,17 +1,13 @@
 .media {
   width: 75%;
   height: 15em;
-  background-color: black;
+  background-color: white;
   background-image: '';
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;
 }
 
-#outputDiv {
+/* #outputDiv {
   height: 100%;
-}
-
-.entry {
-  /* border: 1px solid black; */
-}
+} */

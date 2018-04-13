@@ -13,14 +13,18 @@ function getData () {
 function successFunction () {
   var responseData = JSON.parse(this.responseText).content;
 
-  let data = isApproved(responseData);
+  var approvedData = isApproved(responseData);
+
+  var data = selectNumber(approvedData);
 
   var imgTypes = ['jpg', 'jpeg', 'png', 'gif'];
   var audioTypes = ['mp3', 'wma'];
   var videoTypes = ['mpg', 'flv', 'avi', 'mpeg', 'mpv', 'mov', 'rm', 'mp4', '3gp'];
 
+  var uploadFileIndex = findIndex(data[0].answers, 'control_fileupload');
+
   for (let i = 0; i < data.length; i++) {
-    var source = data[i].answers[9].answer[0];
+    var source = data[i].answers[uploadFileIndex].answer[0];
     var ext = getFileExtension(source);
     if (imgTypes.indexOf(ext) > -1) {
       buildImageCard(data[i]);
@@ -28,10 +32,57 @@ function successFunction () {
       buildVideoCard(data[i]);
     } else if (audioTypes.indexOf(ext) > -1) {
       buildAudioCard(data[i]);
+    } else {
+      buildRegularCard(data[i]);
     }
   }
   addCarouselImages();
 };
+
+function findIndex (data, id) {
+  var value = traverse(data, id);
+  var property = data.getKeyByValue(value);
+  return property
+};
+
+Object.prototype.getKeyByValue = function( value ) {
+  for( var prop in this ) {
+      if( this.hasOwnProperty( prop ) ) {
+           if( this[ prop ] === value )
+               return prop;
+      }
+  }
+}
+
+function traverse (data, id) {
+  if (typeof data == "object") {
+    Object.entries(data).forEach(function([key, value]) {
+      if(key=="type" && value==id) {
+        return value;
+      }
+
+      traverse(value);
+    });
+  }
+}
+
+function selectNumber (dataArray) {
+  return dataArray.slice(0, 15);
+}
+
+function buildRegularCard (entryData) {
+  var domString = '';
+
+  var post = entryData.answers[4].answer;
+  var name = entryData.answers[3].answer;
+
+  domString += '<div class="entry">';
+  domString +=  '<h3>' + name + '</h3>';
+  domString +=  '<p>' + post + '</p>';
+  domString += '</div>';
+
+  printToDom(domString, 'outputDiv');
+}
 
 function isApproved (data) {
   let newArray = [];
@@ -78,11 +129,10 @@ function checkSource (url) {
 
 function addCarouselImages (dataArray) {
   var carouselImages = document.getElementsByClassName('media');
-  var imgArray = Array.from(carouselImages);
-  for (let i = 0; i < imgArray.length; i++) {
-    var src = imgArray[i].getAttribute('data-src');
+  for (let i = 0; i < carouselImages.length; i++) {
+    var src = carouselImages[i].getAttribute('data-src');
     if (src != undefined) {
-      imgArray[i].style.backgroundImage = 'url(' + src + ')';
+      carouselImages[i].style.backgroundImage = 'url(' + src + ')';
     }
   }
 }
