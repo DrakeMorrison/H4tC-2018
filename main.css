@@ -1,0 +1,13 @@
+.media {
+  width: 75%;
+  height: 15em;
+  background-color: white;
+  background-image: '';
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+/* #outputDiv {
+  height: 100%;
+} */

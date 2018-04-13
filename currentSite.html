@@ -1,3 +1,16 @@
+<div id="outputDiv">&nbsp;</div>
+<style type="text/css">.media {
+  width: 85%;
+  height: 15em;
+  background-color: black;
+  background-image: '';
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  border: 1px solid black;
+}
+</style>
+<script>
 function printToDom (string, id) {
   document.getElementById(id).innerHTML += string;
 }
@@ -21,10 +34,8 @@ function successFunction () {
   var audioTypes = ['mp3', 'wma'];
   var videoTypes = ['mpg', 'flv', 'avi', 'mpeg', 'mpv', 'mov', 'rm', 'mp4', '3gp'];
 
-  var uploadFileIndex = findIndex(data[0].answers, 'control_fileupload');
-
   for (let i = 0; i < data.length; i++) {
-    var source = data[i].answers[uploadFileIndex].answer[0];
+    var source = data[i].answers[9].answer[0];
     var ext = getFileExtension(source);
     if (imgTypes.indexOf(ext) > -1) {
       buildImageCard(data[i]);
@@ -38,33 +49,6 @@ function successFunction () {
   }
   addCarouselImages();
 };
-
-function findIndex (data, id) {
-  var value = traverse(data, id);
-  var property = data.getKeyByValue(value);
-  return property
-};
-
-Object.prototype.getKeyByValue = function( value ) {
-  for( var prop in this ) {
-      if( this.hasOwnProperty( prop ) ) {
-           if( this[ prop ] === value )
-               return prop;
-      }
-  }
-}
-
-function traverse (data, id) {
-  if (typeof data == "object") {
-    Object.entries(data).forEach(function([key, value]) {
-      if(key=="type" && value==id) {
-        return value;
-      }
-
-      traverse(value);
-    });
-  }
-}
 
 function selectNumber (dataArray) {
   return dataArray.slice(0, 15);
@@ -80,6 +64,8 @@ function buildRegularCard (entryData) {
   domString +=  '<h3>' + name + '</h3>';
   domString +=  '<p>' + post + '</p>';
   domString += '</div>';
+  domString += '<br />';
+  domString += '<hr width="85%">';
 
   printToDom(domString, 'outputDiv');
 }
@@ -119,6 +105,8 @@ function buildImageCard (entryData) {
   domString +=  '<h3>' + name + '</h3>';
   domString +=  '<p>' + post + '</p>';
   domString += '</div>';
+  domString += '<br />';
+  domString += '<hr width="85%">';
 
   printToDom(domString, 'outputDiv');
 }
@@ -147,10 +135,13 @@ function buildAudioCard (entryData) {
   domString += '<div class="entry">';
   if (source !== '') {
     domString +=  '<audio class="media" src="' + source + '" alt=""></audio>';
+
   }
   domString +=  '<h3>' + name + '</h3>';
   domString +=  '<p>' + post + '</p>';
   domString += '</div>';
+  domString += '<br />';
+  domString += '<hr width="85%">';
 
   printToDom(domString, 'outputDiv');
 };
@@ -162,15 +153,31 @@ function buildVideoCard (entryData) {
   var post = entryData.answers[4].answer;
   var name = entryData.answers[3].answer;
 
-  domString += '<div class="entry">';
-  if (source !== '') {
-    domString +=  '<video controls class="media" src="' + source + '" alt="">/video>';
-  }
-  domString +=  '<h3>' + name + '</h3>';
-  domString +=  '<p>' + post + '</p>';
+  
+  if(!checkBrowser()) {
+   	if (source !== '') {
+  		domString += '<div class="entry">';
+      domString +=  '<video controls preload="none" class="media" src="' + source + '" alt="">/video>';
+        domString +=  '<h3>' + name + '</h3>';
+  domString +=  '<p >' + post + '</p>';
   domString += '</div>';
+  domString += '<br />';
+ // domString += '<hr width="85%">';
+  	}
+   }
+  domString +=  '<h3>' + name + '</h3>';
+  domString +=  '<p >' + post + '</p>';
+  domString += '</div>';
+  domString += '<br />';
+  domString += '<hr width="85%">';
 
   printToDom(domString, 'outputDiv');
 };
 
+function checkBrowser (){
+  return !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
+}
+
 getData();
+
+</script>
