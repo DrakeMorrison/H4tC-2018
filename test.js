@@ -56,7 +56,8 @@ function getFileExtension (fname) {
 function buildImageCard (entryData) {
   var domString = '';
 
-  var source = entryData.answers[9].answer[0];
+  var presource = entryData.answers[9].answer[0];
+  var source = checkSource(presource);
   var post = entryData.answers[4].answer;
   var name = entryData.answers[3].answer;
 
@@ -69,6 +70,10 @@ function buildImageCard (entryData) {
   domString += '</div>';
 
   printToDom(domString, 'outputDiv');
+}
+
+function checkSource (url) {
+  return url.split(' ').join('%20');
 }
 
 function addCarouselImages (dataArray) {
