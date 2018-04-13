@@ -11,25 +11,38 @@ function getData () {
 };
 
 function successFunction () {
-  var data = JSON.parse(this.responseText).content;
+  var responseData = JSON.parse(this.responseText).content;
+
+  let data = isApproved(responseData);
   console.log(data);
 
   var imgTypes = ['jpg', 'jpeg', 'png', 'gif'];
   var audioTypes = ['mp3', 'wma'];
   var videoTypes = ['mpg', 'flv', 'avi', 'mpeg', 'mpv', 'mov', 'rm', 'mp4', '3gp'];
 
-  data.forEach(item => {
-    var source = item.answers[9].answer[0];
+  for (let i = 0; i < data.length; i++) {
+    var source = data[i].answers[9].answer[0];
     var ext = getFileExtension(source);
     if (imgTypes.indexOf(ext) > -1) {
-      buildImageCard(item);
+      buildImageCard(data[i]);
     } else if (videoTypes.indexOf(ext) > -1) {
-      buildVideoCard(item);
+      buildVideoCard(data[i]);
     } else if (audioTypes.indexOf(ext) > -1) {
-      buildAudioCard(item);
+      buildAudioCard(data[i]);
+    }
+  }
+  addCarouselImages(data);
+};
+
+function isApproved (data) {
+  let newArray = [];
+  data.forEach(function (item) {
+    if (item.answers[13].answer == 'Approved') {
+      newArray.push(item);
     }
   });
-};
+  return newArray;
+}
 
 function errorFunction () {
   console.error('Something went wrong');
@@ -42,42 +55,54 @@ function getFileExtension (fname) {
 };
 
 function buildImageCard (entryData) {
+  var domString = '';
+
   var source = entryData.answers[9].answer[0];
   var post = entryData.answers[4].answer;
   var name = entryData.answers[3].answer;
 
-  var domString = '';
-  domString += "<div class='container-fluid'></div>";
-  domString += `<div class="panel panel-default">`;
-  domString +=  `<div class="panel-heading">`;
-  domString +=    `<h3 class="panel-title">Panel title</h3>`;
-  domString +=  `</div>`;
-  domString +=  `<div class="panel-body">`;
-  domString +=    `Panel content`;
-  domString +=  `</div>`;
-  domString += `</div>`;
+  domString += '<div class="item">';
+  domString +=  '<img class="image" alt="">';
+  domString +=  '<div class="carousel-caption">';
+  domString +=    '<h3>' + name + '</h3>';
+  domString +=    '<p>' + post + '</p>';
+  domString +=  '</div>';
+  domString += '</div>'
 
   printToDom(domString, 'outputDiv');
-};
+  var div = document.getElementById('outputDiv');
+  if (div.children[0].className == 'item') {
+    div.children[0].className = 'item active';
+  }
+}
+
+function addCarouselImages (dataArray) {
+  var carouselImages = document.getElementsByClassName('image');
+  for (let i = 0; i < dataArray.length; i++) {
+    var src = dataArray[i].answers[9].answer[0];
+    if (src != undefined && src ) {
+      console.log(carouselImages);
+      // carouselImages[i].style.backgroundImage = 'url(' + src + ')';
+    }
+  }
+}
 
 function buildAudioCard (entryData) {
-  var source = entryData.answers[9].answer[0];
-  var ext = getFileExtension(entryData);
+  // var source = entryData.answers[9].answer[0];
 
-  var domString = '';
-  domString += "<audio src='" + source + "'></audio>";
+  // var domString = '';
+  // domString += "<audio src='" + source + "'></audio>";
 
-  printToDom(domString, 'outputDiv');
+  // printToDom(domString, 'outputDiv');
 };
 
 function buildVideoCard (entryData) {
-  var source = entryData.answers[9].answer[0];
-  var ext = getFileExtension(entryData);
+  // var source = entryData.answers[9].answer[0];
 
-  var domString = '';
-  domString += "<video type='video/mov' controls width='700' height='344' src='" + source + "'></video>";
+  // var domString = '';
+  // domString += "<video type='video/mov' controls width='700' height='344' src='" + source + "'></video>";
 
-  printToDom(domString, 'outputDiv');
+  // printToDom(domString, 'outputDiv');
 };
 
 getData();

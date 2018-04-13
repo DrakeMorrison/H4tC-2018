@@ -1,0 +1,13 @@
+.image {
+  min-width: 100%;
+  min-height: 50em;
+  background-color: black;
+  background-image: '';
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+}
+
+#outputDiv {
+  height: 100%;
+}
